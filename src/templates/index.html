@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>ROOT FILM - Premiere Project Downgrader V1.0.1</title>
+<style>
+  :root { --bg: #0f1217; --card: #1b2029; --pr: #9999ff; --accent: #10b981; --gold: #f59e0b; --text: #e2e8f0; --muted: #94a3b8; }
+  * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; user-select: none; }
+  body { margin: 0; background: var(--bg); color: var(--text); padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; height: 100vh; overflow: hidden; }
+  .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2d3442; padding-bottom: 12px; gap: 10px; }
+  .title { font-size: 15.5px; font-weight: bold; color: var(--pr); }
+  .sub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .top-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-about { background: #262b35; color: #e2e8f0; border: 1px solid #3f4654; padding: 7px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .btn-donate { background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; border: none; padding: 7px 13px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+  .card { background: var(--card); border: 1px solid #2f3746; border-radius: 10px; padding: 15px 16px; display: flex; flex-direction: column; gap: 11px; }
+  .step-label { font-size: 12.5px; font-weight: bold; color: #fbbf24; text-transform: uppercase; }
+  .file-row { display: flex; gap: 10px; align-items: center; }
+  .file-box { flex: 1; background: #11141a; border: 1px solid #333b4a; padding: 10px 12px; border-radius: 6px; font-family: Menlo, Consolas, monospace; font-size: 12px; color: #38bdf8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-pick { background: var(--pr); color: #111; font-weight: bold; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-size: 12.5px; white-space: nowrap; }
+  .ver-info { font-size: 12px; color: var(--muted); }
+  .ver-info b { color: #34d399; }
+  .year-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .btn-year { background: #262c38; color: #fff; border: 1px solid #3f4859; border-radius: 8px; padding: 14px 10px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .btn-year span { font-size: 11px; color: var(--muted); font-weight: normal; }
+  .btn-year:hover:not(:disabled) { background: var(--accent); color: #000; border-color: var(--accent); }
+  .btn-year:hover:not(:disabled) span { color: #064e3b; }
+  .btn-year:disabled { opacity: 0.4; cursor: not-allowed; }
+  .status-box { background: #131720; border: 1px solid #2d3544; border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+  .status-text { font-size: 12.5px; color: #cbd5e1; line-height: 1.4; }
+  .btn-open { display: none; background: #262b35; color: #38bdf8; border: 1px solid #38bdf8; padding: 7px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; white-space: nowrap; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none; align-items: center; justify-content: center; z-index: 999; padding: 16px; }
+  .modal-card { background: #1b1e26; border: 1px solid #3f4654; border-radius: 14px; width: 390px; padding: 20px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
+  .about-card { width: 520px; text-align: left; }
+  .modal-close { position: absolute; top: 12px; right: 12px; background: #2d3340; color: #cbd5e1; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
+  .modal-title { font-size: 16px; font-weight: bold; color: var(--gold); margin-bottom: 4px; }
+  .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .about-section { background: #14171c; border: 1px solid #2f3542; border-radius: 8px; padding: 10px 14px; margin-bottom: 9px; font-size: 12px; line-height: 1.55; color: #cbd5e1; }
+  .about-section-title { font-weight: bold; color: #38bdf8; margin-bottom: 4px; font-size: 12.5px; }
+  .qr-cropped-box { background: #ffffff; border-radius: 12px; padding: 14px 16px 12px; width: 245px; margin: 0 auto 14px; }
+  .vp-logo { display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 800; font-size: 16px; color: #008446; margin-bottom: 8px; }
+  .vp-leaf { width: 14px; height: 14px; background: linear-gradient(135deg, #ed1c24, #008446); border-radius: 2px 10px 2px 10px; display: inline-block; }
+  .qr-cropped-box img { width: 185px; height: 185px; display: block; margin: 0 auto; }
+  .qr-badges { display: flex; justify-content: center; gap: 10px; margin-top: 8px; font-size: 10px; font-weight: 800; }
+  .bank-info-box { background: #14171c; border: 1px solid #2f3542; border-radius: 8px; padding: 10px 14px; text-align: left; font-size: 12.5px; display: flex; flex-direction: column; gap: 6px; }
+  .info-line { display: flex; justify-content: space-between; align-items: center; }
+  .btn-copy { background: #2b313e; color: var(--gold); border: 1px solid #3f4654; border-radius: 4px; padding: 2px 8px; font-size: 11px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="title">🎬 ROOT FILM - PREMIERE DOWNGRADER V1.0.1</div>
+      <div class="sub">Hạ cấp file .prproj từ CC 2026 xuống các phiên bản thấp hơn</div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-about" onclick="document.getElementById('aboutModal').style.display='flex'">ℹ️ Giới thiệu</button>
+      <button class="btn-donate" onclick="document.getElementById('donateModal').style.display='flex'">☕ Ủng hộ tác giả</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="step-label">Bước 1: Nhập file Project (.prproj)</div>
+    <div class="file-row">
+      <div class="file-box" id="fileDisplay">Chưa chọn file project nào...</div>
+      <button class="btn-pick" onclick="pickFile()">📂 Chọn File .prproj</button>
+    </div>
+    <div class="ver-info">Phiên bản gốc của file: <b id="detectedVer">---</b></div>
+  </div>
+  <div class="card">
+    <div class="step-label">Bước 2: Bấm chọn đời Adobe Premiere muốn hạ xuống</div>
+    <div class="year-grid">
+      <button class="btn-year" onclick="convertYear('2025')" disabled>CC 2025 <span>(Version 43)</span></button>
+      <button class="btn-year" onclick="convertYear('2024')" disabled>CC 2024 <span>(Version 42)</span></button>
+      <button class="btn-year" onclick="convertYear('2023')" disabled>CC 2023 <span>(Version 41)</span></button>
+      <button class="btn-year" onclick="convertYear('2022')" disabled>CC 2022 <span>(Version 40)</span></button>
+      <button class="btn-year" onclick="convertYear('2021')" disabled>CC 2021 <span>(Version 39)</span></button>
+      <button class="btn-year" onclick="convertYear('2020')" disabled>CC 2020 <span>(Version 38)</span></button>
+    </div>
+  </div>
+  <div class="status-box">
+    <div class="status-text" id="statusText">💡 Hãy chọn file .prproj trước, sau đó bấm vào năm bạn muốn xuất.</div>
+    <button class="btn-open" id="btnOpenFolder" onclick="openOutFolder()">📂 Mở thư mục</button>
+  </div>
+  <div class="modal-overlay" id="aboutModal" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-card about-card">
+      <button class="modal-close" onclick="document.getElementById('aboutModal').style.display='none'">✖</button>
+      <div class="modal-title">ℹ️ GIỚI THIỆU & THÔNG TIN BẢN QUYỀN</div>
+      <div class="modal-sub">ROOT FILM - Premiere Project Downgrader V1.0.1</div>
+      <div class="about-section"><div class="about-section-title">👨‍💻 Tác giả & Mục đích phát triển</div><div>Phát triển bởi <b>Phạm Dương (ROOT FILM VIETNAM)</b> nhằm hỗ trợ anh em dựng phim chuyển đổi nhanh file Project Adobe Premiere (.prproj) từ phiên bản mới xuống các phiên bản thấp hơn.</div></div>
+      <div class="about-section" style="margin-bottom:0;"><div class="about-section-title">🔒 An toàn dữ liệu</div><div>Ứng dụng xử lý trực tiếp trên máy tính cá nhân, luôn giữ nguyên file gốc và tạo bản sao mới gắn hậu tố năm.</div></div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="donateModal" onclick="if(event.target===this) this.style.display='none'">
+    <div class="modal-card">
+      <button class="modal-close" onclick="document.getElementById('donateModal').style.display='none'">✖</button>
+      <div class="modal-title">☕ ỦNG HỘ TÁC GIẢ PHÁT TRIỂN APP</div>
+      <div class="modal-sub">Cảm ơn bạn đã ủng hộ Phạm Dương (ROOT FILM VIETNAM)!</div>
+      <div class="qr-cropped-box">
+        <div class="vp-logo"><span class="vp-leaf"></span> VPBank</div>
+        <img src="https://img.vietqr.io/image/VPB-270208193-qr_only.png" alt="QR VPBank">
+        <div class="qr-badges"><span style="color:#d9232e;">VIETQR</span><span style="color:#005baa;">napas 247</span></div>
+      </div>
+      <div class="bank-info-box">
+        <div class="info-line"><span style="color:var(--muted);">Ngân hàng:</span><span style="color:#34d399; font-weight:bold;">VPBank</span></div>
+        <div class="info-line"><span style="color:var(--muted);">Số tài khoản:</span><span><b style="color:#fff;">270208193</b> <button class="btn-copy" onclick="navigator.clipboard.writeText('270208193');this.innerText='Đã chép!'">Copy</button></span></div>
+        <div class="info-line"><span style="color:var(--muted);">Chủ tài khoản:</span><b style="color:#fff;">PHAM VAN DUONG</b></div>
+      </div>
+    </div>
+  </div>
+<script>
+  let currentFilePath = ""; let lastOutFolder = "";
+  function setYearButtonsEnabled(enabled) { document.querySelectorAll('.btn-year').forEach(b => b.disabled = !enabled); }
+  function pickFile() {
+    fetch('/api/select_file', { method: 'POST' }).then(r => r.json()).then(data => {
+      if (data.error) return alert(data.error);
+      if (data.status === 'ok') {
+        currentFilePath = data.file_path; document.getElementById('fileDisplay').innerText = data.file_name;
+        document.getElementById('detectedVer').innerText = data.detected_version; setYearButtonsEnabled(true);
+        document.getElementById('statusText').innerText = "✔ Đã nạp file! Bấm vào năm bạn muốn hạ cấu hình ở trên.";
+        document.getElementById('statusText').style.color = "#34d399"; document.getElementById('btnOpenFolder').style.display = "none";
+      }
+    });
+  }
+  function convertYear(year) {
+    if (!currentFilePath) return;
+    document.getElementById('statusText').innerText = `⏳ Đang chuyển đổi sang Premiere CC ${year}...`;
+    fetch('/api/convert', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ file_path: currentFilePath, year: year }) })
+      .then(r => r.json()).then(res => {
+        const st = document.getElementById('statusText');
+        if (res.error) { st.innerText = "❌ " + res.error; st.style.color = "#f87171"; return; }
+        lastOutFolder = res.folder; st.innerHTML = `🎉 Đã xuất thành công: <b>${res.out_name}</b>`; st.style.color = "#34d399";
+        document.getElementById('btnOpenFolder').style.display = "inline-block";
+      });
+  }
+  function openOutFolder() { if (lastOutFolder) fetch('/api/open_folder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folder: lastOutFolder }) }); }
+</script>
+</body>
+</html>
